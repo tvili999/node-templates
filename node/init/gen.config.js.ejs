@@ -1,0 +1,30 @@
+<% 
+const fs = require("fs");
+const path = require("path");
+let config = {};
+
+try {
+    config = JSON.parse(fs.readFileSync(path.resolve(projectRoot, "gen.config.json"), "utf-8"));
+}
+catch {}
+
+const copyArgs = [
+    "jest",
+    "eslint",
+    "babel",
+    "modules"
+]
+
+config = {
+    ...(config || {}),
+    "node-templates": {
+        ...(config?.["node-templates"] || {}),
+    }
+}
+copyArgs.forEach(arg => config["node-templates"][arg] = args[arg]);
+-%>
+---
+to: gen.config.json
+overwrite: true
+---
+<%- JSON.stringify(config, null, 4) %>

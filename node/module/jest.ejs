@@ -1,0 +1,21 @@
+<% 
+let currentPath;
+let moduleName;
+if(args.jest) { 
+    include("dirStructure.ejs");
+    const path = require("path");
+
+    currentPath = path.resolve(projectRoot, args.modules || "src", args.name, '..');
+    moduleName = path.basename(args.name);
+}
+-%>
+<%_ if(args.jest) { -%>
+---
+to: <%=currentPath %>/<%=moduleName%>.test.js
+overwrite: <%=args.overwrite > 1 ? true : false %>
+---
+test('passes', () => {
+
+});
+
+<%_ } -%>

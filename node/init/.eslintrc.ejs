@@ -1,0 +1,32 @@
+<%_ if(args.eslint) { -%>
+---
+to: .eslintrc
+overwrite: true
+---
+{
+    <%_ if(args.babel) { -%>
+    "parser": "babel-eslint",
+    <%_ } -%>
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": { }
+    },
+    "env": {
+        <%_ if(args.jest) { -%>
+        "jest": true,
+        <%_ } -%>
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended"
+    ],
+    "rules": {
+        "semi": [2, "always"],
+        "indent": ["error", 4],
+        "object-curly-spacing": ["error", "always"],
+        "max-len": ["error", { "code": 100 }]
+    },
+    "settings": { }
+}
+<%_ } -%>

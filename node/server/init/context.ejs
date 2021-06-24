@@ -1,0 +1,28 @@
+<% 
+const path = require("path");
+const createStructure = require("../../generateDirStructure.js");
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure("core/server", moduleRoot, args.overwrite);
+%>
+---
+to: src/core/server/context.js
+overwrite: true
+---
+const createContext = require("node-tools/context");
+
+module.exports = container => (container
+    .inject("context", async ({ get }) => {
+        const server = await get("server");
+        const context = createContext();
+
+        server.config(app => {
+            app.use(context);
+        });
+
+        return context;
+    })
+)

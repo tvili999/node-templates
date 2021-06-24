@@ -1,0 +1,28 @@
+<%
+const path = require("path");
+const fs = require("fs");
+const childProcess = require("child_process");
+
+const packageJsonPath = path.resolve(projectRoot, "package.json");
+let packageJson = {
+    "name": path.basename(projectRoot),
+    "version": "1.0.0",
+    "license": "MIT"
+};
+if(fs.existsSync(packageJsonPath))
+    packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
+
+packageJson.dependencies = {
+    ...(packageJson.dependencies || {}),
+    "mongoose": "^5.12.13",
+}
+
+addHook("afterCreate", () => {
+    childProcess.exec("yarn");
+});
+-%>
+---
+to: package.json
+overwrite: true
+---
+<%-JSON.stringify(packageJson, null, 4) %>

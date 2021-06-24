@@ -1,0 +1,61 @@
+<%
+const path = require("path");
+const fs = require("fs");
+const childProcess = require("child_process");
+
+const packageJsonPath = path.resolve(projectRoot, "package.json");
+let packageJson = {
+    "name": path.dirname(projectRoot),
+    "version": "1.0.0",
+    "license": "MIT"
+};
+if(fs.existsSync(packageJsonPath))
+    packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
+
+packageJson.scripts = {
+    ...(packageJson.scripts || {}),
+    ...(args.babel ? {
+        "start": "babel-node index.js",
+        "start:watch": "nodemon --exec babel-node index.js"
+    } : {
+        "start:watch": "nodemon index.js",
+        "start": "node index.js"
+    })
+}
+
+packageJson.dependencies = {
+    ...(packageJson.dependencies || {}),
+    "js-container": "https://github.com/tvili999/js-container",
+    "js-utils": "https://github.com/tvili999/js-utils",
+    "node-tools": "https://github.com/tvili999/node-tools"
+}
+
+packageJson.devDependencies = {
+    ...(packageJson.devDependencies || {}),
+    ...(args.eslint ? {
+        "eslint": "^7.29.0",
+        ...(args.babel ? {
+            "babel-eslint": "^10.1.0",
+        } : {}),
+    } : {}),
+    ...(args.babel ? {
+        "@babel/cli": "^7.14.5",
+        "@babel/core": "^7.14.6",
+        "@babel/node": "^7.14.5",
+        "@babel/preset-env": "^7.14.5",
+        "@babel/plugin-proposal-decorators": "^7.14.5",
+        "@babel/plugin-proposal-do-expressions": "^7.14.5",
+        "@babel/plugin-proposal-pipeline-operator": "^7.14.5",
+    } : {}),
+    "nodemon": "^2.0.7"
+};
+
+addHook("afterCreate", () => {
+    childProcess.exec("yarn");
+});
+-%>
+---
+to: package.json
+overwrite: true
+---
+<%-JSON.stringify(packageJson, null, 4) %>

@@ -1,0 +1,42 @@
+<% 
+const path = require("path");
+const createStructure = require("../../generateDirStructure.js");
+
+const modelPath = path.join("models", path.dirname(args.name));
+
+const name = path.basename(args.name).toLowerCase();
+const capitalName = name[0].toUpperCase() + name.slice(1);
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure(modelPath, moduleRoot, args.overwrite);
+-%>
+---
+to: src/<%=modelPath %>/<%=name %>.js
+---
+const registerModel = require("node-tools/registerModel");
+const mongoose = require("mongoose");
+
+module.exports = container => (container
+    .inject("models:<%= capitalName%>", async ({get}) => {
+        const db = await get("mongo");
+
+        const <%= capitalName%> = db.model('<%= capitalName%>', {
+        });
+
+        return <%= capitalName%>;
+    })
+    .run(async ({ get }) => {
+        const stash = await get("stash");
+        const context = await get("context");
+        const <%= capitalName%> = await get("models:<%= capitalName%>");
+
+        registerModel("<%= name%>", { context, stash, functions: {
+            list: (req) => <%= capitalName%>.findMany({  }),
+            create: (req, fields) => new <%= capitalName%>(fields)
+        } });
+    })
+)
+

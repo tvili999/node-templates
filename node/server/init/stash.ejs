@@ -1,0 +1,26 @@
+<% 
+const path = require("path");
+const createStructure = require("../../generateDirStructure.js");
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure("core/server", moduleRoot, args.overwrite);
+%>
+---
+to: src/core/server/stash.js
+overwrite: true
+---
+const createStash = require("node-tools/stash");
+
+module.exports = container => (container
+    .inject("stash", async ({ get }) => {
+        const context = await get("context");
+        const stash = createStash();
+
+        context.add("stash", () => stash.create());
+
+        return stash;
+    })
+)

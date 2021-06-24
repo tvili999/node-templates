@@ -1,0 +1,36 @@
+<% 
+const path = require("path");
+const createStructure = require("../../generateDirStructure.js");
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure("core/server", moduleRoot, args.overwrite);
+-%>
+---
+to: src/core/server/server.js
+overwrite: true
+---
+const express = require("express");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
+
+module.exports = container => (container
+    .configure(require("node-tools/multistage")("server", {
+        init: () => express(),
+        run: (app) => app.listen(<%=args.port || 3000 %>),
+        stages: ["config", "route", "fallback"]
+    }))
+    .run(async ({ get }) => {
+        const server = await get("server");
+
+        server.config(app => {
+            app.use(morgan('dev'));
+            app.use(bodyParser.urlencoded({ extended: false }));
+            app.use(bodyParser.json());
+            app.use(cookieParser())
+        })
+    })
+)

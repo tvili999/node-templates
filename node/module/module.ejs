@@ -1,0 +1,20 @@
+<%
+include("dirStructure.ejs");
+const path = require("path");
+
+currentPath = path.resolve(projectRoot, args.modules || "src", args.name, '..');
+const moduleName = path.basename(args.name);
+%>
+---
+to: <%=currentPath %>/<%=moduleName%>.js
+overwrite: <%=args.overwrite > 1 ? true : false %>
+---
+module.exports = container => (container
+    .inject("<%=moduleName%>", async ({ get }) => {
+        const api = {
+
+        };
+
+        return api;
+    })
+);

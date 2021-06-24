@@ -1,0 +1,15 @@
+<% 
+const path = require("path");
+const createStructure = require("../generateDirStructure.js");
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure("core", moduleRoot, args.overwrite);
+%>
+---
+to: src/core/config.js
+overwrite: true
+---
+module.exports = require("node-tools/configLoader").fromFile("config", "config.json");

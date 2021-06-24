@@ -1,0 +1,31 @@
+---
+to: .vscode/settings.json
+overwrite: true
+---
+{
+    <%_ if(args.eslint) { -%>
+    "javascript.validate.enable": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": ["javascript"],
+    <%_ } -%>
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/build": true,
+        <%_ if(args.babel) { -%>
+        "**/.babelrc": true,
+        <%_ } -%>
+        <%_ if(args.eslint) { -%>
+        "**/.eslintrc": true,
+        <%_ } -%>
+        "**/index.js": true,
+        "**/postcss.config.js": true,
+        "**/gen.config.json": true,
+        "**/jsconfig.json": true,
+        "**/yarn.lock": true,
+        "**/.gitignore": true,
+        "**/package.json": true,
+        "**/webpack.config.js": true,
+    }
+}

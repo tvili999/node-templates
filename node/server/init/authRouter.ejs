@@ -1,0 +1,23 @@
+<% 
+const path = require("path");
+const createStructure = require("../../generateDirStructure.js");
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure("core/server", moduleRoot, args.overwrite);
+%>
+---
+to: src/core/server/authRouter.js
+overwrite: true
+---
+const createAuthRouter = require("node-tools/authRouter");
+
+module.exports = container => (container
+    .inject("authentication", async ({ get }) => {
+        throw "Not implemented";
+        return createAuthRouter({
+        })
+    })
+)

@@ -1,0 +1,30 @@
+<% 
+const path = require("path");
+const createStructure = require("../../generateDirStructure.js");
+
+const method = args.method || "get";
+const modulePath = path.dirname(args.name)
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure(path.join("routes", modulePath), moduleRoot, args.overwrite);
+%>
+---
+to: src/routes/<%= args.name%>.js
+overwrite: true
+---
+module.exports = container => (container
+    .run(async ({ get }) => {
+        const server = await get("server");
+        <%_ if(args.auth) { -%>
+        const { <%= args.auth%> } = await get("authentication");
+        <%_ } -%>
+
+        server.route(app => {
+            app.<%= method%>("/<%=args.name%>", <%= args.auth || ""%>(async (req, res) => {
+            }));
+        })
+    })
+)

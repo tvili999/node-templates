@@ -1,0 +1,29 @@
+<% 
+const path = require("path");
+const createStructure = require("../../generateDirStructure.js");
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure("core/mongo", moduleRoot, args.overwrite);
+-%>
+---
+to: src/core/mongo/mongo.js
+overwrite: true
+---
+const mongoose = require("mongoose");
+
+module.exports = container => (container
+    .inject("mongo", async ({ get }) => {
+        const config = await get("config");
+        mongoose.connect(config.database.url, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = mongoose.connection;
+
+        db.on("error", console.error);
+
+        await new Promise(resolve => db.once("open", resolve));
+
+        return db;
+    })
+)
