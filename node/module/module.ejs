@@ -1,12 +1,18 @@
 <%
-include("dirStructure.ejs");
 const path = require("path");
+const createStructure = require("../generateDirStructure.js");
 
-currentPath = path.resolve(projectRoot, args.modules || "src", args.name, '..');
-const moduleName = path.basename(args.name);
+const modulePath = path.dirname(args.name)
+const moduleName = path.basename(args.name)
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure(modulePath, moduleRoot, args.overwrite);
 %>
 ---
-to: <%=currentPath %>/<%=moduleName%>.js
+to: src/<%=modulePath %>/<%=moduleName%>.js
 overwrite: <%=args.overwrite > 1 ? true : false %>
 ---
 module.exports = container => (container

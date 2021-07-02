@@ -1,17 +1,19 @@
-<% 
-let currentPath;
-let moduleName;
-if(args.jest) { 
-    include("dirStructure.ejs");
-    const path = require("path");
-
-    currentPath = path.resolve(projectRoot, args.modules || "src", args.name, '..');
-    moduleName = path.basename(args.name);
-}
--%>
 <%_ if(args.jest) { -%>
+<%
+const path = require("path");
+const createStructure = require("../generateDirStructure.js");
+
+const modulePath = path.dirname(args.name)
+const moduleName = path.basename(args.name)
+
+let moduleRoot = path.resolve(projectRoot, "src");
+if(args.modules)
+    moduleRoot = path.join(moduleRoot, args.modules);
+
+createStructure(modulePath, moduleRoot, args.overwrite);
+%>
 ---
-to: <%=currentPath %>/<%=moduleName%>.test.js
+to: src/<%=modulePath %>/<%=moduleName%>.test.js
 overwrite: <%=args.overwrite > 1 ? true : false %>
 ---
 test('passes', () => {
