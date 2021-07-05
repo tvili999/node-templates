@@ -1,0 +1,17 @@
+<%
+const path = require("path");
+const fs = require("fs");
+const childProcess = require("child_process");
+
+const configPath = path.resolve(projectRoot, "config.json");
+let config = {  };
+if(fs.existsSync(configPath))
+    config = JSON.parse(fs.readFileSync(configPath));
+
+config.port = config.port || args.port || 3000;
+-%>
+---
+to: config.json
+overwrite: true
+---
+<%-JSON.stringify(config, null, 4) %>

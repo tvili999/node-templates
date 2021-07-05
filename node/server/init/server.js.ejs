@@ -18,9 +18,10 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 
 module.exports = container => (container
+    .inject("express", () => express())
     .configure(require("node-tools/multistage")("server", {
-        init: () => express(),
-        run: (app) => app.listen(<%=args.port || 3000 %>),
+        init: ({ get }) => get("express"),
+        run: async ({ get }) => (await get("express")).listen((await get("config")).port),
         stages: ["config", "route", "fallback"]
     }))
     .run(async ({ get }) => {
