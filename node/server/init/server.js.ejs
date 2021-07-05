@@ -24,7 +24,9 @@ module.exports = container => (container
         run: async ({ get }) => {
             const app = await get("express");
             const config = await get("config");
-            app.listen(config?.port || 3000);
+            await new Promise(resolve => {
+                app.listen(config?.port || 3000, () => resolve());
+            })
         },
         stages: ["config", "route", "fallback"]
     }))
