@@ -3,7 +3,7 @@ to: src/index.js
 overwrite: true
 ---
 const fs = require("fs");
-require("js-container")(
-    ({ debug }) => debug(),
+
+module.exports = require("js-container")(
     ...(fs.readdirSync(__dirname).filter(x => x !== "index.js").map(x => require(`./${x}`)))
 );
