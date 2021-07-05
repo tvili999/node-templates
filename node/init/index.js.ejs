@@ -9,6 +9,6 @@ module.exports = require("js-container")(
         .filter(x => x !== "index.js")
         .filter(x => !x.endsWith(".standalone.js"))
         .filter(x => !x.endsWith(".test.js"))
-        .map(x => require(\`./\${x}\`))
+        .map(x => require(`./${x}`))
     )
 );
