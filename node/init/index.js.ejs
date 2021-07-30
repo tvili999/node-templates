@@ -4,7 +4,7 @@ overwrite: true
 ---
 const fs = require("fs");
 
-module.exports = require("js-container")(
+module.exports = () => require("js-container")(
     ...(fs.readdirSync(__dirname)
         .filter(x => x !== "index.js")
         .filter(x => !x.endsWith(".standalone.js"))
